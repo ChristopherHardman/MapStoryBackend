@@ -19,6 +19,6 @@ router.put('/stories/:id', storyController.editStoryMeta);
 //event actions
 router.post('/stories/:id/event', eventsController.addEvent);
 router.put('/stories/:id/:eventId', eventsController.editEvent);
-
+router.delete('/stories/:id/:eventId', eventsController.deleteEvent);
 
 module.exports = router;

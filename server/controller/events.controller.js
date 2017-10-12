@@ -32,7 +32,7 @@ const editEvent = async (ctx, next) => {
                                    .populate('events');
     const targetEvent = targetStory.events;
     for (var i = 0; i < targetEvent.length; i++) {
-      if (targetEvent[i]['_id'] == ctx.params.eventId) { //need to update for params
+      if (targetEvent[i]['_id'] == ctx.params.eventId) {
         targetEvent[i]['title'] = ctx.request.body.title,
         targetEvent[i]['startTime'] = ctx.request.body.startTime,
         targetEvent[i]['attacment'] = ctx.request.body.attachment
@@ -46,7 +46,27 @@ const editEvent = async (ctx, next) => {
 };
 
 
+//Deletes existing events
+const deleteEvent = async (ctx, next) => {
+  try {
+    const targetStory = await Story.findOne({"_id": ctx.params.id})
+                                   .populate('events');
+    const targetEvent = targetStory.events;
+    console.log(targetEvent);
+    for (var i = 0; i < targetEvent.length; i++) {
+      if (targetEvent[i]['_id'] == ctx.params.eventId) {
+        delete targetEvent[i];
+      }
+    }
+    targetStory.save();
+    ctx.status = 200;
+  } catch (error) {
+    ctx.throw(401, 'Could not edit event!');
+  }
+};
+
 module.exports = {
   addEvent,
-  editEvent
+  editEvent,
+  deleteEvent
 };
