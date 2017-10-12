@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Editor = require('../model/editor.model'); //required???
+const Event = require('../model/event.model');
+
 
 const editorSchema = new Schema({
   _id: Schema.Types.ObjectId,
@@ -33,7 +35,7 @@ const storySchema = new Schema({
   published: Boolean,
   likes: Number,
   duration: String,
-  events:[eventSchema],
+  events:[{ type: Schema.Types.ObjectId, ref: 'Event' }],
 });
 
 const Story = mongoose.model('Story', storySchema);

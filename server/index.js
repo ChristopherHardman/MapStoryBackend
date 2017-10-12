@@ -8,7 +8,7 @@ const router = require('./router');
 const db = require('./db');
 
 app
-  .use(async (cxt, next) => {
+  .use(async (ctx, next) => {
     try {
       await next();
     } catch (e) {
