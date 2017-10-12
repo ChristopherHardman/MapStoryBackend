@@ -6,17 +6,21 @@ const Attachment = require('../model/event.model');
 //Adds event to events array within story object
 const addEvent = async (ctx, next) => {
   try {
-    const target = await Story.findOne({"_id": ctx.params.id});
-    const eventData = {
-      title: ctx.request.body.title,
-      startTime: ctx.request.body.startTime,
-      attachments: ctx.request.body.attachments
-    };
-    const createdEvent = await Event.create(eventData);
-    target.events.push(createdEvent._id);
-    target.save();
-    ctx.status = 201;
-    ctx.body = createdEvent;
+    if (ctx.request.body.title) {
+      const target = await Story.findOne({"_id": ctx.params.id});
+      const eventData = {
+        title: ctx.request.body.title,
+        startTime: ctx.request.body.startTime,
+        MapLocation: ctx.request.body.MapLocation,
+        DateAndTime: ctx.request.body.DateAndTime,
+        attachments: ctx.request.body.attachments
+      };
+      const createdEvent = await Event.create(eventData);
+      target.events.push(createdEvent._id);
+      target.save();
+      ctx.status = 201;
+      ctx.body = createdEvent;
+    }
   }
   catch (error) {
     console.error(error);
@@ -35,6 +39,8 @@ const editEvent = async (ctx, next) => {
       if (targetEvent[i]['_id'] == ctx.params.eventId) {
         targetEvent[i]['title'] = ctx.request.body.title,
         targetEvent[i]['startTime'] = ctx.request.body.startTime,
+        targetEvent[i]['DateAndTime'] = ctx.request.body.DateAndTime,
+        targetEvent[i]['MapLocation'] = ctx.request.body.MapLocation,
         targetEvent[i]['attacment'] = ctx.request.body.attachment
       }
     }
@@ -52,13 +58,17 @@ const deleteEvent = async (ctx, next) => {
     const targetStory = await Story.findOne({"_id": ctx.params.id})
                                    .populate('events');
     const targetEvent = targetStory.events;
-    console.log(targetEvent);
     for (var i = 0; i < targetEvent.length; i++) {
+          console.log('SUCCESS');
       if (targetEvent[i]['_id'] == ctx.params.eventId) {
-        delete targetEvent[i];
+        let a = targetEvent.splice(0,i);
+        let b = targetEvent.splice(i+1,targetEvent.length-1);
+        let c = a.concat(b);
+        targetStory.events = c;
       }
     }
     targetStory.save();
+
     ctx.status = 200;
   } catch (error) {
     ctx.throw(401, 'Could not edit event!');
