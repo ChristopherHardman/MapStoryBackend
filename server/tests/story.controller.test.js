@@ -102,35 +102,28 @@ describe('Story', () => {
         _id: '123',
       }
     };
+
     const mockStory = mocks.mockStory;
     mockStoryModel.findStory = sinon.stub().returns(mockStory);
     StoriesController.editStory(ctx).should.be.rejectedWith(400);
   });
 
-  it('should remove story from DB when deleted', async() => {
-    const ctx = {
+  it ('should get model to update story', async () => {
+    ctx = {
+      params: {
+        id: '41224d776a326fb40f000001',
+      },
       request: {
         body: {
-          title: 'Waking Life',
-          tagLine: 'A dream guide',
-          map: 'http://awz.com/123.jpg',
-          duration: '00:50',
-        },
-      },
+          title: 'Morning Rise',
+        }
+      }
     };
-    const mockStoryData = {
-      editor: 'Emma Stone',
-      title: ctx.request.body.title,
-      tagLine: ctx.request.body.tagLine,
-      map: ctx.request.body.map,
-      duration: ctx.request.body.duration,
-      events: [],
-    };
-    await StoriesController.createStory(ctx);
+    const spy = sinon.spy(mockStoryModel, 'editStory');
+    await StoriesController.editStory(ctx);
+    spy.should.have.been.calledWith(ctx.params.id, { title: 'Morning Rise' });
   });
 
-  it('viewStory should return a single story');
-  it('should update story when edited');
   it('should create a new event');
   it('if events are deleted the story events array should reflect this');
 });

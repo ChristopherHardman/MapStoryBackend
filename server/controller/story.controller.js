@@ -64,7 +64,6 @@ const editStory = async (ctx, next) => {
   const edits = ctx.request.body;
   const storyId = ctx.params.id;
   const updatedProps = {};
-
   if (edits.published) {
     const storyToPublish = await Story.findStory(storyId);
     if (storyToPublish.events.length < 1) {
@@ -83,6 +82,8 @@ const editStory = async (ctx, next) => {
   const updatedStory = await Story.findStory(storyId);
 
   ctx.body = updatedStory;
+
+  return updatedStory;
 };
 
 const deleteStory = async (ctx, next) => {
