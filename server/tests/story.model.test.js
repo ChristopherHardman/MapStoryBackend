@@ -4,7 +4,7 @@ const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 chai.should();
 chai.use(sinonChai);
-const StoryModel = require('../model/model');
+// const StoryModel = require('../model/model');
 // const Mongoose  = mongoose.model('Story', Story.storySchema);
 
 describe('Story Model', () => {

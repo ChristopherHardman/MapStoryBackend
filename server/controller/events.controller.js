@@ -6,7 +6,7 @@ const Attachment = require('../model/event.model');
 //Adds event to events array within story object
 const addEvent = async (ctx, next) => {
   try {
-    if (ctx.request.body.title) {
+    if (ctx.request.body.title.length > 0) {
       const target = await Story.findOne({"_id": ctx.params.id});
       const eventData = {
         title: ctx.request.body.title,
@@ -20,11 +20,12 @@ const addEvent = async (ctx, next) => {
       target.save();
       ctx.status = 201;
       ctx.body = createdEvent;
+    } else {
+      throw 'No title provided!';
     }
   }
   catch (error) {
-    console.error(error);
-    ctx.throw('Could not create event!');
+    throw ('Could not create event!');
   }
 };
 
@@ -59,7 +60,6 @@ const deleteEvent = async (ctx, next) => {
                                    .populate('events');
     const targetEvent = targetStory.events;
     for (var i = 0; i < targetEvent.length; i++) {
-          console.log('SUCCESS');
       if (targetEvent[i]['_id'] == ctx.params.eventId) {
         let a = targetEvent.splice(0,i);
         let b = targetEvent.splice(i+1,targetEvent.length-1);
