@@ -4,11 +4,10 @@ const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
-// chai.should();
+chai.should();
 require('chai').should();
-const Event = require('../controller/events.controller');
+const Event =  require('../controller/events.controller');
 const proxyquire = require('proxyquire');
-
 
 describe('addEvents', () => {
 
@@ -29,9 +28,25 @@ describe('addEvents', () => {
   }
 );
 
-  it('should make search for a story on the DB',
+  it('should search for a story on the DB & save to it',
   async () => {
+
+    const spy = sinon.spy();
+
+    const EventController = proxyquire('../controller/events.controller', {
+      '../model/story.model': {
+        '@noCallThru': true,
+        findOne: () => ({
+          save: spy,
+          events: [],
+        })
+      }
+    });
+
     const ctx = {
+      params: {
+        id: 42
+      },
       request: {
         body: {
           title: 'This is a story',
@@ -42,9 +57,8 @@ describe('addEvents', () => {
         }
       }
     };
-    var addEventSpy = sinon.spy(Event.addEvent.target);
-    Event.addEvent(ctx);
-    addEventSpy.calledOnce.should.equal(true);
+    await EventController.addEvent(ctx);
+    spy.calledOnce.should.equal(true);
 
   }
   );

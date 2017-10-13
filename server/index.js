@@ -5,7 +5,7 @@ const Console = console;
 
 const app = new Koa();
 const router = require('./router');
-const db = require('./db');
+require('./db')('mapstory-backend');
 
 app
   .use(async (ctx, next) => {

@@ -3,11 +3,14 @@ const Event = require('../model/event.model');
 const Story = require('../model/story.model');
 const Attachment = require('../model/event.model');
 
+require('../db')('mapstory-backend-test');
+
 //Adds event to events array within story object
 const addEvent = async (ctx, next) => {
   try {
     if (ctx.request.body.title.length > 0) {
-      const target = await Story.findOne({"_id": ctx.params.id});
+
+      const target = await Story.findOne({_id: ctx.params.id});
       const eventData = {
         title: ctx.request.body.title,
         startTime: ctx.request.body.startTime,
@@ -25,6 +28,7 @@ const addEvent = async (ctx, next) => {
     }
   }
   catch (error) {
+    console.error(error);
     throw ('Could not create event!');
   }
 };
@@ -48,7 +52,7 @@ const editEvent = async (ctx, next) => {
     targetStory.save();
     ctx.status = 200;
   } catch (error) {
-    ctx.throw(401, 'Could not edit event!');
+    throw (401, 'Could not edit event!');
   }
 };
 
@@ -71,7 +75,7 @@ const deleteEvent = async (ctx, next) => {
 
     ctx.status = 200;
   } catch (error) {
-    ctx.throw(401, 'Could not edit event!');
+    throw (401, 'Could not edit event!');
   }
 };
 
