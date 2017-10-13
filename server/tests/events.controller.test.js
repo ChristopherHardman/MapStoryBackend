@@ -24,25 +24,24 @@ describe('addEvents', () => {
         }
       }
     };
-    Event.addEvent(ctx).should.be.rejected;
+    await Event.addEvent(ctx).should.be.rejected;
   }
 );
 
+
   it('should search for a story on the DB & save to it',
   async () => {
-
     const spy = sinon.spy();
-
     const EventController = proxyquire('../controller/events.controller', {
       '../model/story.model': {
         '@noCallThru': true,
         findOne: () => ({
+          id: 123,
           save: spy,
           events: [],
         })
       }
     });
-
     const ctx = {
       params: {
         id: 42
@@ -59,43 +58,62 @@ describe('addEvents', () => {
     };
     await EventController.addEvent(ctx);
     spy.calledOnce.should.equal(true);
-
   }
   );
 
 
-  it('should create an event', async () => {
-    const ctx1 = {
+  it('should create an event',
+  async () => {
+    const spy = sinon.spy();
+    const ctx = {
+      params: {
+        id: 42
+      },
       request: {
         body: {
-          title: 'My first event',
+          title: 'This is a story',
           startTime: 38,
-          dateAndTime: 'Thurs 21 December',
           mapLocation: 'Barcelona',
-          attachments: [{
-            type: 'Movie',
-            title: 'First movie',
-            description: 'The first movie added',
-            text: 'Some text about the movie',
-            link: 'www.movie.com',
-          }],
+          dateAndTime: 'Thurs 21 December',
+          attachments: [],
         }
       }
     };
-    sinon.stub(Event.addEvent.target).returns({events: []});
-    sinon.stub(Event.addEvent.createdEvent).returns({_id: 123});
-    sinon.stub(Event.addEvent.target.save).returns();
-    await Event.addEvent(ctx1);
+    const mockEvent = {
+      title: ctx.request.body.title,
+      startTime: ctx.request.body.startTime,
+      mapLocation: ctx.request.body.mapLocation,
+      dateAndTime: ctx.request.body.dateAndTime,
+      attachments: ctx.request.body.attachments
+    };
+    const EventController = proxyquire('../controller/events.controller',
 
-    Event.addEvent.eventData.title.should.equal('My first event');
-    Event.addEvent.eventData.startTime.should.equal(38);
-    Event.addEvent.eventData.MapLocation.should.equal('Barcelona');
-    Event.addEvent.eventData.DateAndTime.should.equal('Thurs 21 December');
-    sinon.assert.calledOnce(Event.addEvent.Event.create);
-    sinon.assert.calledOnce(Event.addEvent.target.save());
+      {
+        '../model/story.model': {
+          '@noCallThru': true,
+          findOne: () => ({
+            id: 123,
+            save: spy,
+            events: [],
+          })
+        }
+      },
+
+      {
+        '../model/event.model': {
+          '@noCallThru': true,
+          create: () => mockEvent
+        }
+      });
+
+    await EventController.addEvent(ctx);
+    ctx.request.body.should.eql(mockEvent);
+  }
+  );
 
 
-  });
+
+
 
   it('should handle promise rejections',
   function () {

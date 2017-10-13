@@ -8,8 +8,7 @@ require('../db')('mapstory-backend-test');
 //Adds event to events array within story object
 const addEvent = async (ctx, next) => {
   try {
-    if (ctx.request.body.title.length > 0) {
-
+    if (ctx.request.body.title) {
       const target = await Story.findOne({_id: ctx.params.id});
       const eventData = {
         title: ctx.request.body.title,
