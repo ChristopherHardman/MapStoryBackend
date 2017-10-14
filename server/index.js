@@ -8,7 +8,7 @@ const router = require('./router');
 require('./db')('mapstory-backend');
 
 app
-  .use(async (cxt, next) => {
+  .use(async (ctx, next) => {
     try {
       await next();
     } catch (e) {
@@ -20,6 +20,11 @@ app
         };
       }
     }
+  })
+  .use(async (ctx, next) => {
+    let token = ctx.headers.token;
+    if (!token) return await next();
+    let exp = ctx.headers.exp;
   })
   .use(bodyParser())
   .use(cors())

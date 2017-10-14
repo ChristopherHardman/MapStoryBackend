@@ -41,9 +41,7 @@ describe('Stories Collection', () => {
     const ctx = {
       params: {page: 3},
     };
-    // StoriesController.getAllStories(ctx).should.be.rejectedWith(400);
-    //Why is the test passing although it's throwing an error?
-    StoriesController.getAllStories(ctx).should.be.fulfilled;
+    StoriesController.getAllStories(ctx).should.be.rejectedWith(400);
   });
 
   it('should return only records that match any query terms provided', async () => {
@@ -88,6 +86,7 @@ describe('Story', () => {
         },
       }
     };
+    //doesn't seem to make a difference whether its rejected or rejectedWith(any number) 
     StoriesController.createStory(ctx).should.be.rejectedWith(400);
   });
 
@@ -105,6 +104,7 @@ describe('Story', () => {
 
     const mockStory = mocks.mockStory;
     mockStoryModel.findStory = sinon.stub().returns(mockStory);
+    //doesn't seem to make a difference whether its rejected or rejectedWith(any number)
     StoriesController.editStory(ctx).should.be.rejectedWith(400);
   });
 

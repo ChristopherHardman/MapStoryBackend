@@ -28,8 +28,6 @@ const storySchema = new Schema({
 
 const Story = mongoose.model('Story', storySchema);
 
-
-
 Story.getAllStories = () => {
   return Story
       .find()

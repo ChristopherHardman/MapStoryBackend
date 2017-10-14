@@ -17,6 +17,7 @@ const getAllStories = async (ctx, next) => {
   }
 };
 
+
 const getQuery = async (ctx, next) => {
   const searchResults = [];
   const query = ctx.request.query.q;
