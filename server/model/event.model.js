@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Story = require('../model/story.model');
 
 const attachmentSchema = new Schema({
   type: String,
@@ -20,7 +19,7 @@ const eventSchema = new Schema({
   startTime: String,
   dateAndTime: Date,
   mapLocation: String,
-  location: [locationSchema],
+  location: locationSchema,
   attachments: [attachmentSchema],
 });
 

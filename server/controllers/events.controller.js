@@ -113,6 +113,7 @@ const deleteEvent = async (ctx, next) => {
       }
     }
     story.save();
+    // await Event.findByIdAndRemove(ctx.params.eventId)
     ctx.status = 204;
   } catch (error) {
     throw (401, 'Could not edit event!');
